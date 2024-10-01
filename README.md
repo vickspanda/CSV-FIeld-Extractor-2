@@ -1,60 +1,50 @@
-## Project Title: CSV Field Extraction Based on User-Specified Conditions
+# CSV Field Extractor
 
-### Introduction
+## Overview
+
 This program allows you to extract specific fields from a CSV file based on multiple user-specified conditions in sequence. It filters the data step-by-step and generates intermediate CSV files for each condition, finally producing a text file (`outFile.txt`) with the desired output field.
 
-### Features
-- **Condition-based filtering**: Apply conditions on fields such as Degree, Gender, Year, etc.
+## Features
+
+- **Flexible Condition Filtering**: You can filter data based on any combination of Roll No, First Name, Middle Name, Last Name, Gender, Year, and Degree.
+- **Condition Order Preservation**: Conditions are evaluated in the order specified by the user.
+- **CSV Input**: The program processes data from a CSV file where fields are structured as `RollNo, FirstName MiddleName LastName, Gender, Year, Degree`.
 - **Sequential filtering**: Conditions are applied one after another, generating intermediate filtered CSV files.
 - **Final result output**: The final result is saved in `outFile.txt`, containing the desired field after all conditions are satisfied.
 
-### Example Use Case
-Suppose you want to extract all the **first names** of students where:
-1. **Degree** is MSc,
-2. **Gender** is Female (F),
-3. **Year** is 2024.
+## How It Works
 
-The program will:
-1. Filter all rows where the degree is MSc and save them in a new CSV file.
-2. From this file, filter the rows where gender is F and save it in another file.
-3. Further filter by year (2024) and produce the final output with the first names in `outFile.txt`.
+1. **Condition Specification**: The user specifies filtering conditions (e.g., Degree, Gender, Year) via command-line arguments.
+2. **Field Output**: After specifying the conditions, the user provides the field they want to extract, such as the First Name of students matching the conditions.
+3. **CSV Structure**: The program assumes the CSV file follows the format:
 
-### Assumptions
-- The input CSV file is structured with the following fields:
-  ```
-  RollNo, FirstName, MiddleName, LastName, Gender, Year, Degree
-  ```
-  **No extra spaces** are allowed in the CSV file.
-  
-- The program only supports one field to be printed in the output at a time.
+   ```csv
+   RollNo, FirstName MiddleName LastName, Gender, Year, Degree
+   ```
 
-### Keywords for Fields
-- `-r`: Roll No
-- `-fn`: First Name
-- `-mn`: Middle Name
-- `-ln`: Last Name
-- `-g`: Gender
-- `-y`: Year
-- `-d`: Degree
+## Prerequisites
 
-### Command-Line Syntax
-To run the program, use the following syntax in the terminal:
+- Ensure you have a C compiler (e.g., gcc) installed.
+- A CSV file containing data in the format mentioned above.
 
-```
-$ make
-$ ./extractField <your-csv-file> <field1> <value1> <field2> <value2> ... -print <field-to-print>
+## Program Syntax
+
+```bash
+./extractField <csv-file> <field1> <value1> <field2> <value2> ... -print <fieldx>
 ```
 
-#### Parameters:
-- `<your-csv-file>`: The CSV file you want to process.
-- `<field>`: The keyword for the field (e.g., `-r` for Roll No, `-fn` for First Name, etc.).
-- `<value>`: The value to match for the specified field.
-- `-print`: Specifies which field you want to output in the final result (`outFile.txt`).
+### Example
 
-#### Example Command:
-To extract all first names where Degree is MSc, Gender is Female, and Year is 2024:
-```
-$ ./extractField students.csv -d MSc -g F -y 2024 -print -fn
+To extract the **First Names** of students with:
+
+- **Degree**: MSc
+- **Gender**: Female (F)
+- **Year**: 2024
+
+Use the command:
+
+```bash
+./extractField student.csv -d MSc -g F -y 2024 -print -fn
 ```
 
 ### Program Flow
@@ -73,10 +63,46 @@ $ ./extractField students.csv -d MSc -g F -y 2024 -print -fn
 ### File Handling
 The program generates intermediate CSV files (e.g., `temp1.csv`, `temp2.csv`) for each filtering condition. These temporary files are used internally to narrow down the dataset until the final output is produced.
 
-### Error Handling
-- **Invalid number of arguments**: If the number of arguments is not as expected, the program outputs: `Error: Invalid Number of Arguments`.
-- **Invalid fields or conditions**: If an unrecognized field is passed, it outputs: `Error: Invalid Fields Passed`.
-- **Missing or incorrect CSV file**: If the CSV file is missing or does not have the `.csv` extension, it outputs: `Error: .csv File is expected as an Input`.
+## Field and Condition Keywords
 
-### Conclusion
-This program efficiently filters CSV data based on user-defined conditions and provides a simple way to extract specific fields into a final text file. It can be useful for various data analysis tasks where filtering and extracting specific data is needed.
+You have to use the following keywords to specify fields and conditions in the command-line arguments:
+
+| Keyword | Field         |
+|---------|---------------|
+| `-r`    | Roll No       |
+| `-fn`   | First Name    |
+| `-mn`   | Middle Name   |
+| `-ln`   | Last Name     |
+| `-g`    | Gender        |
+| `-y`    | Year          |
+| `-d`    | Degree        |
+| `-print`| Print Field   |
+
+### Important Notes:
+- **Conditions**: You can specify any combination of fields as conditions.
+- **Print Field**: Only one field can be specified for output using the `-print` option, and must be mentioned in the last.
+- **Order of Conditions**: The program evaluates the conditions in the order they are provided.
+  
+## Error Handling
+
+The program performs the following validations:
+
+1. **CSV File Extension**: The input file must have a `.csv` extension.
+2. **Number of Arguments**: The command should have a valid number of arguments. Invalid argument counts will result in an error message.
+3. **Field Validation**: The program checks whether the specified field keywords are valid. If not, it returns an error.
+
+## Compilation and Execution
+
+1. **Compilation**: 
+
+   ```bash
+   make
+   ```
+
+2. **Execution**:
+
+   Example of running the program to filter students with `MSc` degree, `F` gender, and `2024` year, extracting their first names:
+
+   ```bash
+   ./extractField student.csv -d MSc -g F -y 2024 -print -fn
+   ```
